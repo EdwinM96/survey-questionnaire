@@ -65,6 +65,7 @@ Please answer every statement, even if you are not completely sure of your respo
                     <div class="col-3">
                         <div class="form group">
                             <select name="opcion" class="form-control" id="answer-question${index.index+1}">
+                                    <option value="">0</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
