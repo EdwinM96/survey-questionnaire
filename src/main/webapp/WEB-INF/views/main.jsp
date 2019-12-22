@@ -11,6 +11,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Personality Survey</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <style>
@@ -18,8 +19,9 @@
         </style>
     </head>
     <body>
-        <div class="container" style="margin-top:40px;">
-            <div class="row">
+        <div class="container" style="margin-top:30px;">
+            <div class="text-center"><h2 style="color:blue">Your title here</h2></div>
+            <div class="row" style="margin-top:10px">
                 <div class="col-8">Please provide your email address</div>
             </div>
             <div class="row" style="margin-top:20px; margin-bottom:20px">
