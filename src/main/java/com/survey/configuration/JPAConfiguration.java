@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = {"com.disma.dao","com.disma.repository"})
+@EnableJpaRepositories(basePackages = {"com.survey.dao","com.survey.repository"})
 public class JPAConfiguration {
 
 	@Bean
