@@ -11,7 +11,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = "com.disma")
+@ComponentScan(basePackages = "com.survey")
 public class SpringConfiguration implements WebMvcConfigurer {
 
 	
