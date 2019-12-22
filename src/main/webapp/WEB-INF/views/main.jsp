@@ -23,7 +23,7 @@
                 <div class="col-8">Please provide your email address</div>
             </div>
             <div class="row" style="margin-top:20px; margin-bottom:20px">
-                <div class="col-6">Email:</div>
+                <div class="col-4">Email:</div>
                 <div class="col-4"><input type="text" class="form-control"></div>
             </div>
             <div>
