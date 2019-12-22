@@ -5,8 +5,10 @@
  */
 package com.survey.controller;
 
+import com.survey.service.QuestionService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,10 +21,14 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class MainController {
     
+    @Autowired
+    QuestionService qs;
+    
     @RequestMapping("/")
     public ModelAndView main(HttpServletRequest request, HttpServletResponse response){
         ModelAndView mv = new ModelAndView();
         mv.setViewName("main");
+        mv.addObject("questions", qs.findAll());
         return mv;
         
     }

@@ -24,7 +24,7 @@ public class JPAConfiguration {
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
 		em.setDataSource((javax.sql.DataSource) dataSource());
-		em.setPersistenceUnitName("persistencia");
+		em.setPersistenceUnitName("persistence");
 		em.setPackagesToScan("com.survey.domain");
 		JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		em.setJpaVendorAdapter(vendorAdapter);
