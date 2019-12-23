@@ -35,6 +35,9 @@ public class Answers {
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="SurveyTakerID")
     private SurveyTaker surveyTaker;
+    
+    @Column(name="Answer")
+    private String answer;
 
     public Answers() {
     }
@@ -61,6 +64,14 @@ public class Answers {
 
     public void setSurveyTaker(SurveyTaker surveyTaker) {
         this.surveyTaker = surveyTaker;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
     
     

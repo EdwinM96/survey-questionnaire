@@ -12,6 +12,7 @@ import com.survey.service.AnswersService;
 import com.survey.service.QuestionService;
 import com.survey.service.SurveyTakerService;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -46,28 +48,36 @@ public class MainController {
         return mv;        
     }
     
-    @RequestMapping(name="/addAnswer", method=RequestMethod.POST)
+    @RequestMapping(value="/addAnswer", method=RequestMethod.POST)
     public void addAnswer(HttpServletRequest request, HttpServletResponse response){
         Answers answer = new Answers();
         Question question = new Question();
-        SurveyTaker surveyTaker = new SurveyTaker();
-        
+        SurveyTaker surveyTaker = new SurveyTaker();       
     }
     
-    @RequestMapping(name="/setEmail", method=RequestMethod.POST)
-    public void setEmail(HttpServletRequest request, HttpServletResponse response){
-        SurveyTaker surveyTaker = new SurveyTaker();
-        surveyTaker.setEmail((String) request.getParameter("email"));
-        sts.saveSurveyTaker(surveyTaker);
-        SurveyTaker userSurveyTaker = new SurveyTaker();
-        List<SurveyTaker> surveyTakers = sts.findAll();
-        for(SurveyTaker st:surveyTakers){
-            if(st.getEmail().equals(surveyTaker.getEmail())){
-                userSurveyTaker = st;
-                break;
+    @RequestMapping(value="/setEmail", method=RequestMethod.POST)
+    public void setEmail(HttpServletRequest request, HttpServletResponse response, @RequestParam(name="email") String email){
+        HttpSession session = request.getSession();
+        Logger l = Logger.getLogger("controller");
+        l.info("Local address: "+request.getRemoteAddr());
+        if(session.getAttribute("surveyTaker")!=null){
+            SurveyTaker thisST = (SurveyTaker) session.getAttribute("surveyTaker");
+            thisST.setEmail(email);
+            sts.saveSurveyTaker(thisST);
+            return;
+        }
+        else{
+            List<SurveyTaker> surveyTakers = sts.find(request.getRemoteAddr());
+            if(!surveyTakers.isEmpty()){
+                SurveyTaker st = surveyTakers.get(surveyTakers.size());
+                st.setEmail(email);
+                session.setAttribute("surveyTaker", st);
             }
         }
-        HttpSession session = request.getSession();
+        SurveyTaker surveyTaker = new SurveyTaker();
+        surveyTaker.setEmail(email);
+        surveyTaker.setIp(request.getRemoteAddr());
+        SurveyTaker userSurveyTaker = sts.saveSurveyTaker(surveyTaker);       
         session.setAttribute("surveyTaker", userSurveyTaker);
     }
     

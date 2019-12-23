@@ -11,11 +11,12 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import com.survey.domain.SurveyTaker;
 import java.util.List;
+import org.springframework.stereotype.Service;
 /**
  *
  * @author HP PC
  */
-@Repository
+@Service
 public class SurveyTakerService {
     
     @Autowired
@@ -23,12 +24,18 @@ public class SurveyTakerService {
     
     
     @Transactional
-    public void saveSurveyTaker(SurveyTaker surveyTaker){
-        surveyTakerRepo.saveAndFlush(surveyTaker);
+    public SurveyTaker saveSurveyTaker(SurveyTaker surveyTaker){
+        return surveyTakerRepo.saveAndFlush(surveyTaker);
     }
     
     public List<SurveyTaker> findAll(){
         return surveyTakerRepo.findAll();
+    }
+    
+    public List<SurveyTaker> find(String ip){
+        SurveyTaker st = new SurveyTaker();
+        st.setIp(ip);
+        return surveyTakerRepo.findSurveyTakerByIp(ip);
     }
     
 }

@@ -17,7 +17,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 @Repository
 public interface SurveyTakerRepository extends JpaRepository<SurveyTaker, Integer>{
     
+    public List<SurveyTaker> findSurveyTakerByIp(String ip);
 
+    @Override
     public List<SurveyTaker> findAll();
     
 }

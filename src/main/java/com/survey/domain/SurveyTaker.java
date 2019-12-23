@@ -29,7 +29,7 @@ public class SurveyTaker {
     private String email;
     
     @Column(name="IP")
-    private String varchar;
+    private String ip;
 
     public SurveyTaker() {
     }
@@ -50,12 +50,12 @@ public class SurveyTaker {
         this.email = email;
     }
 
-    public String getVarchar() {
-        return varchar;
+    public String getIp() {
+        return ip;
     }
 
-    public void setVarchar(String varchar) {
-        this.varchar = varchar;
+    public void setIp(String ip) {
+        this.ip = ip;
     }
     
     
