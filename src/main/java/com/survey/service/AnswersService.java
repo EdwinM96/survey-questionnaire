@@ -27,6 +27,7 @@ public class AnswersService {
     
     public void saveAnswers(Answers answers){
         answersRepo.saveAndFlush(answers);
+       
     }
     
 }
