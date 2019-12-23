@@ -103,6 +103,20 @@
                 e.currentTarget.removeEventListener("blur", handler);
                 });              
             }
+            function addOnBlurQuestion(input, name){
+                console.info(input.value)
+                console.info($(name).serialize());
+                input.addEventListener("blur", function handler(e){
+                    $.ajax({
+                        type: "POST",
+                        url: '${pageContext.request.contextPath}/addAnswer',
+                        data: $(name).serialize(),
+                        success: function(data){
+                        }
+                    })
+                })
+            
+            }
             </script>
         <div class="container" style="margin-top:30px;">
             <div class="text-center"><h2 style="color:blue">Your title here</h2></div>
@@ -150,13 +164,13 @@ Please answer every statement, even if you are not completely sure of your respo
             </div>
             <div style="margin-top:40px;"></div>
             <c:forEach items="${questions}" var="question" varStatus="index">
-                <form>
+                <form method="POST" id="question${index.index+1}" action="${pageContext.request.contextPath}/addAnswer">
                 <div class="row" style="margin-top:20px;">
                     <div class="col-9"><strong>${index.index+1}.</strong> ${question.question}</div>
                     <div class="col-3">
                         <div class="form group">
-                            <select name="opcion" class="form-control" id="answer-question${index.index+1}" name="option">
-                                    <option value="">0</option>
+                            <select name="option" class="form-control" id="answer-question${index.index+1}" name="option" onchange="addOnBlurQuestion(this,'#question${index.index+1}')">
+                                    <option value="0">0</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -164,6 +178,7 @@ Please answer every statement, even if you are not completely sure of your respo
                                     <option value="4">5</option>
                            </select>
                         </div>
+                        <input type="hidden" value="${index.index+1}" name="question">
                     </div>
                 </div>
                 </form>

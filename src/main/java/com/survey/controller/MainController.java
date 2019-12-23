@@ -49,10 +49,18 @@ public class MainController {
     }
     
     @RequestMapping(value="/addAnswer", method=RequestMethod.POST)
-    public void addAnswer(HttpServletRequest request, HttpServletResponse response){
+    public void addAnswer(HttpServletRequest request, HttpServletResponse response, @RequestParam(name="option") String option, @RequestParam(name="question") Integer questionId){
+        if(request.getSession().getAttribute("surveyTaker")==null){
+            return;
+        }
         Answers answer = new Answers();
         Question question = new Question();
-        SurveyTaker surveyTaker = new SurveyTaker();       
+        question.setId(questionId);
+        SurveyTaker surveyTaker = (SurveyTaker) request.getSession().getAttribute("surveyTaker");    
+        answer.setAnswer(option);
+        answer.setQuestion(question);
+        answer.setSurveyTaker(surveyTaker);
+        as.saveAnswers(answer);
     }
     
     @RequestMapping(value="/setEmail", method=RequestMethod.POST)
@@ -69,7 +77,7 @@ public class MainController {
         else{
             List<SurveyTaker> surveyTakers = sts.find(request.getRemoteAddr());
             if(!surveyTakers.isEmpty()){
-                SurveyTaker st = surveyTakers.get(surveyTakers.size());
+                SurveyTaker st = surveyTakers.get(surveyTakers.size()-1);
                 st.setEmail(email);
                 session.setAttribute("surveyTaker", st);
             }
