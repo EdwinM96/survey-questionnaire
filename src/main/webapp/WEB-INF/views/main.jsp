@@ -14,14 +14,49 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Personality Survey</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-        <style>
-            
+        <style type="text/css">
+           .lds-ring {
+                display: inline-block;
+                position: relative;
+                width: 80px;
+                height: 80px;
+              }
+              .lds-ring div {
+                box-sizing: border-box;
+                display: block;
+                position: absolute;
+                width: 64px;
+                height: 64px;
+                margin: 8px;
+                border: 8px solid #fff;
+                border-radius: 50%;
+                animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+                border-color: #fff transparent transparent transparent;
+              }
+              .lds-ring div:nth-child(1) {
+                animation-delay: -0.45s;
+              }
+              .lds-ring div:nth-child(2) {
+                animation-delay: -0.3s;
+              }
+              .lds-ring div:nth-child(3) {
+                animation-delay: -0.15s;
+              }
+              @keyframes lds-ring {
+                0% {
+                  transform: rotate(0deg);
+                }
+                100% {
+                  transform: rotate(360deg);
+                }
+              }
+              
         </style>
     </head>
     <body>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js" integrity="sha384-FzT3vTVGXqf7wRfy8k4BiyzvbNfeYjK+frTVqZeNDFl8woCbF0CYG6g2fMEFFo/i" crossorigin="anonymous"></script>
-
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
         <script>
             function exportOportunidades() {
             $.ajax({
@@ -88,8 +123,6 @@
             }
             
             function addOnblurEmail(input,name){
-            console.info("Entre en el OnBlur")
-            console.info($(name).serialize())
             input.addEventListener("blur", function handler(e) {  
                     $.ajax({
                     type: "POST",
@@ -117,6 +150,30 @@
                 })
             
             }
+            function submitQuestions(){
+                if($("#emailInput").val()==null){
+                    $("#emailInput").scrollTop();
+                    return;
+                }
+                $("#loadingModal").modal("show");
+                $.ajax({
+                        type: "GET",
+                        url: '${pageContext.request.contextPath}/processAnswers',
+                        data: $("#email").serialize(),
+                        success: function(indicators){
+                            
+                            $("#loadingModal").modal("hide");
+                            $("#exportModal").modal("show");
+                            
+                            $("#honesty-humility").text(indicators.honestyHumility);
+                            $("#sincerity").text(indicators.sincerity);
+                            $("#fairness").text(indicators.fairness);
+                            $("#greed-avoidance").text(indicators.greedAvoidance);
+                            $("#modesty").text(indicators.modesty);
+                            
+                        }
+                    })
+            }
             </script>
         <div class="container" style="margin-top:30px;">
             <div class="text-center"><h2 style="color:blue">Your title here</h2></div>
@@ -128,7 +185,7 @@
                 <div class="col-4">Email:</div>                
                 <div class="col-4">
                     <form method="POST" id='email' action="${pageContext.request.contextPath}/setEmail">
-                    <input type="text" class="form-control" onchange="addOnblurEmail(this,'#email')" name="email" autocomplete="off">
+                    <input type="text" class="form-control" onchange="addOnblurEmail(this,'#email')" name="email" autocomplete="off" id="emailInput">
                     </form>
                 </div>               
             </div>
@@ -185,8 +242,59 @@ Please answer every statement, even if you are not completely sure of your respo
             </c:forEach>
             
             <div class="center-text text-center" style="margin-top:30px; margin-bottom:40px;">
-                <button class="btn btn-primary">Submit</button>
+                <button class="btn btn-primary" onclick="submitQuestions()">Submit</button>
             </div>
+            
+            <!--------------Export Modal ------------------>
+        <div id="exportModal" class="modal fade" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Survey Results</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-6 text-center"><Strong>Honesty-Humility</strong></div>
+                            <div class="col-6 text-center" id="honesty-humility"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Sincerity</div>
+                            <div class="col-6 text-center" id="sincerity"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Fairness</div>
+                            <div class="col-6 text-center" id="fairness"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Greed-Avoidance</div>
+                            <div class="col-6 text-center" id="greed-avoidance"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Modesty</div>
+                            <div class="col-6 text-center" id="modesty"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary"  onclick="exportSurvey()">Export Survey</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <!--------------Loading Modal ------------------>
+        <div id="loadingModal" class="modal fade" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="text-center">Loading your results</div>
+                        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
         </div>
     </body>
 </html>

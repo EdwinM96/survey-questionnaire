@@ -19,4 +19,8 @@ public interface QuestionRepository extends JpaRepository<Question, Integer>{
     
     public List<Question> findAll();
     
+    public List<Question> findAllByOrderByNumberAsc();
+    
+    public Question findByNumber(Integer number);
+    
 }

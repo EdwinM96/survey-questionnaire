@@ -21,7 +21,13 @@ public class QuestionService {
     QuestionRepository questionRepo;
     
     public List<Question> findAll(){
-        return questionRepo.findAll();
+        return questionRepo.findAllByOrderByNumberAsc();
+    }
+    public Question findOne(Integer id){
+        return questionRepo.findOne(id);
+    }
+    public Question findByQuestionNumber(Integer number){
+        return questionRepo.findByNumber(number);
     }
     
 }

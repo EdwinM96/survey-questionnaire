@@ -28,6 +28,9 @@ public class Question {
     
     @Column(name="Question")
     private String question;
+    
+    @Column(name="QuestionNumber")
+    private Integer number;
 
     public Question() {
     }
@@ -46,6 +49,14 @@ public class Question {
 
     public void setQuestion(String question) {
         this.question = question;
+    }
+
+    public Integer getNumber() {
+        return number;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
     }
     
     

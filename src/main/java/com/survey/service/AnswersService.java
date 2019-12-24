@@ -8,9 +8,11 @@ package com.survey.service;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 import com.survey.domain.Answers;
+import com.survey.domain.SurveyTaker;
 import com.survey.repository.AnswersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 /**
  *
  * @author HP PC
@@ -25,9 +27,13 @@ public class AnswersService {
         return  answersRepo.findAll();
     }
     
+    @Transactional
     public void saveAnswers(Answers answers){
         answersRepo.saveAndFlush(answers);
        
     }
     
+    public List<Answers> findAll(SurveyTaker st){
+        return answersRepo.findBySurveyTaker(st);
+    }
 }

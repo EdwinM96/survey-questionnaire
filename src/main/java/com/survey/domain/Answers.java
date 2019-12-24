@@ -37,7 +37,7 @@ public class Answers {
     private SurveyTaker surveyTaker;
     
     @Column(name="Answer")
-    private String answer;
+    private Integer answer;
 
     public Answers() {
     }
@@ -66,11 +66,11 @@ public class Answers {
         this.surveyTaker = surveyTaker;
     }
 
-    public String getAnswer() {
+    public Integer getAnswer() {
         return answer;
     }
 
-    public void setAnswer(String answer) {
+    public void setAnswer(Integer answer) {
         this.answer = answer;
     }
     
