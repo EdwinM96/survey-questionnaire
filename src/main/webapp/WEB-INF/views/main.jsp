@@ -20,6 +20,7 @@
                 position: relative;
                 width: 80px;
                 height: 80px;
+                color: grey;
               }
               .lds-ring div {
                 box-sizing: border-box;
@@ -290,7 +291,7 @@ Please answer every statement, even if you are not completely sure of your respo
                 <div class="modal-content">
                     <div class="modal-body">
                         <div class="text-center">Loading your results</div>
-                        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+                        <div class="text-center"><div class="lds-ring"><div></div><div></div><div></div><div></div></div></div>
                     </div>
                 </div>
             </div>
