@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
-import javafx.application.Application;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
