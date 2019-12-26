@@ -5,6 +5,8 @@
  */
 package com.survey.util;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
@@ -28,6 +30,6 @@ public class MySessionListener implements HttpSessionListener {
 
   @Override
   public void sessionDestroyed(HttpSessionEvent se) {
-      System.out.println("-- HttpSessionListener#sessionDestroyed invoked --");
+      System.out.println("-- HttpSessionListener#sessionDestroyed invoked --" + LocalDateTime.now());
   }
 }

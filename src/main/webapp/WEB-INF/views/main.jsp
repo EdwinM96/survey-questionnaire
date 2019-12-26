@@ -15,42 +15,42 @@
         <title>Personality Survey</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <style type="text/css">
-           .lds-ring {
-                display: inline-block;
-                position: relative;
-                width: 80px;
-                height: 80px;
-                color: grey;
-              }
-              .lds-ring div {
-                box-sizing: border-box;
-                display: block;
-                position: absolute;
-                width: 64px;
-                height: 64px;
-                margin: 8px;
-                border: 8px solid #fff;
-                border-radius: 50%;
-                animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-                border-color: #fff transparent transparent transparent;
-              }
-              .lds-ring div:nth-child(1) {
-                animation-delay: -0.45s;
-              }
-              .lds-ring div:nth-child(2) {
-                animation-delay: -0.3s;
-              }
-              .lds-ring div:nth-child(3) {
-                animation-delay: -0.15s;
-              }
-              @keyframes lds-ring {
-                0% {
-                  transform: rotate(0deg);
-                }
-                100% {
-                  transform: rotate(360deg);
-                }
-              }
+          .lds-ring {
+            display: inline-block;
+            position: relative;
+            width: 80px;
+            height: 80px;
+          }
+          .lds-ring div {
+            box-sizing: border-box;
+            display: block;
+            position: absolute;
+            width: 64px;
+            height: 64px;
+            margin: 8px;
+            border: 8px solid #cef;
+            border-radius: 50%;
+            animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+            border-color: grey transparent transparent transparent;
+          }
+          .lds-ring div:nth-child(1) {
+            animation-delay: -0.45s;
+          }
+          .lds-ring div:nth-child(2) {
+            animation-delay: -0.3s;
+          }
+          .lds-ring div:nth-child(3) {
+            animation-delay: -0.15s;
+          }
+          @keyframes lds-ring {
+            0% {
+              transform: rotate(0deg);
+            }
+            100% {
+              transform: rotate(360deg);
+            }
+          }
+
               
         </style>
     </head>
@@ -59,6 +59,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js" integrity="sha384-FzT3vTVGXqf7wRfy8k4BiyzvbNfeYjK+frTVqZeNDFl8woCbF0CYG6g2fMEFFo/i" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
         <script>
+            var exportData;
             function exportOportunidades() {
             $.ajax({
             type: "GET",
@@ -152,7 +153,7 @@
             
             }
             function submitQuestions(){
-                if($("#emailInput").val()==null){
+                if($("#emailInput").val()==null || $("#emailInput").val()==""){
                     $("#emailInput").scrollTop();
                     return;
                 }
@@ -162,7 +163,7 @@
                         url: '${pageContext.request.contextPath}/processAnswers',
                         data: $("#email").serialize(),
                         success: function(indicators){
-                            
+                            exportData = indicators;
                             $("#loadingModal").modal("hide");
                             $("#exportModal").modal("show");
                             
@@ -171,6 +172,38 @@
                             $("#fairness").text(indicators.fairness);
                             $("#greed-avoidance").text(indicators.greedAvoidance);
                             $("#modesty").text(indicators.modesty);
+                            
+                            $("#emotionality").text(indicators.emotionality);
+                            $("#fearfulness").text(indicators.fearfulness);
+                            $("#anxiety").text(indicators.anxiety);
+                            $("#dependence").text(indicators.dependence);
+                            $("#sentimentality").text(indicators.sentimentality);
+                            
+                            $("#extraversion").text(indicators.extraversion);
+                            $("#socialSelfEsteem").text(indicators.socialSelfEsteem);
+                            $("#socialBoldness").text(indicators.socialBoldness);
+                            $("#sociability").text(indicators.sociability);
+                            $("#liveliness").text(idicators.liveliness);
+                            
+                            $("#agreeableness").text(indicators.agreeableness);
+                            $("#forgiveness").text(indicators.forgiveness);
+                            $("#gentleness").text(indicators.gentleness);
+                            $("#flexibility").text(indicators.flexiblity);
+                            $("#patience").text(indicators.patience);
+                            
+                            $("#conscientousness").text(indicators.conscientousness);
+                            $("#organization").text(indicatos.organization);
+                            $("#diligence").text(indicators.diligence);
+                            $("#perfectionism").text(indicators.perfectionism);
+                            $("#prudence").text(indicators.prudence);
+                            
+                            $("#openessToExperience").text(indicators.openessToExperience);
+                            $("#aestheticAppreciation").text(indicators.aestheticAppreciation);
+                            $("#inquisitivness").text(indicators.insquisitivness);
+                            $("#creativity").text(indicators.creativity);
+                            $("#unconventionality").text(indicators.uncoventionality);
+                            
+                            $("#altruism").text(indicators.altruism);
                             
                         }
                     })
@@ -186,7 +219,7 @@
                 <div class="col-4">Email:</div>                
                 <div class="col-4">
                     <form method="POST" id='email' action="${pageContext.request.contextPath}/setEmail">
-                    <input type="text" class="form-control" onchange="addOnblurEmail(this,'#email')" name="email" autocomplete="off" id="emailInput">
+                    <input type="text" class="form-control" onchange="addOnblurEmail(this,'#email')" name="email" autocomplete="off" id="emailInput" title="Please provide a correct email." patter="(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])">
                     </form>
                 </div>               
             </div>
@@ -276,6 +309,110 @@ Please answer every statement, even if you are not completely sure of your respo
                         <div class="row">
                             <div class="col-6 text-center">Modesty</div>
                             <div class="col-6 text-center" id="modesty"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center"><strong>Emotionality</strong></div>
+                            <div class="col-6 text-center" id="emotionality"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Fearfulness</div>
+                            <div class="col-6 text-center" id="fearfulness"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Anxiety</div>
+                            <div class="col-6 text-center" id="anxiety"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Dependence</div>
+                            <div class="col-6 text-center" id="dependence"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Sentimentality</div>
+                            <div class="col-6 text-center" id="sentimentality"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center"><strong>Extraversion</strong></div>
+                            <div class="col-6 text-center" id="extraversion"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Social Self-Esteem</div>
+                            <div class="col-6 text-center" id="socialSelfEsteem"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Social Boldness</div>
+                            <div class="col-6 text-center" id="socialBoldness"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Sociability</div>
+                            <div class="col-6 text-center" id="sociability"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Liveliness</div>
+                            <div class="col-6 text-center" id="liveliness"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center"><strong>Agreeableness</strong></div>
+                            <div class="col-6 text-center" id="agreeableness"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Forgivness</div>
+                            <div class="col-6 text-center"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Gentlness</div>
+                            <div class="col-6 text-center" id="gentlness"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Flexibility</div>
+                            <div class="col-6 text-center" id="flexibility"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Patience</div>
+                            <div class="col-6 text-center" id="patience"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center"><strong>Conscientiousness</strong></div>
+                            <div class="col-6 text-center" id="conscientiousness"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Organization</div>
+                            <div class="col-6 text-center" id="organization"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Diligence</div>
+                            <div class="col-6 text-center" id="diligence"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Perfectionism</div>
+                            <div class="col-6 text-center" id="perfectionism"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Prudence</div>
+                            <div class="col-6 text-center" id="prudence"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center"><strong>Openness to Experience</strong></div>
+                            <div class="col-6 text-center"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Aesthetic Appreciation</div>
+                            <div class="col-6 text-center" id="aestheticAppreciation"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Inquisitivness</div>
+                            <div class="col-6 text-center" id="inquisitivness"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Creativity</div>
+                            <div class="col-6 text-center" id="creativity"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Unconventionality</div>
+                            <div class="col-6 text-center" id="unconventionality"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">Altruism</div>
+                            <div class="col-6 text-center" id="altruism"></div>
                         </div>
                     </div>
                     <div class="modal-footer">
