@@ -28,9 +28,8 @@ public class AnswersService {
     }
     
     @Transactional
-    public void saveAnswers(Answers answers){
-        answersRepo.saveAndFlush(answers);
-       
+    public Answers saveAnswers(Answers answers){
+        return answersRepo.saveAndFlush(answers);      
     }
     
     public List<Answers> findAll(SurveyTaker st){

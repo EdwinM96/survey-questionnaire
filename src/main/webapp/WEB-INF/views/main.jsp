@@ -103,6 +103,7 @@
             }
             
             function addOnblurEmail(input,name){
+                $(input).removeClass("is-invalid");
             input.addEventListener("blur", function handler(e) {  
                     $.ajax({
                     type: "POST",
@@ -119,6 +120,7 @@
             function addOnBlurQuestion(input, name){
                 console.info(input.value)
                 console.info($(name).serialize());
+                $(input).removeClass("is-invalid");
                 input.addEventListener("blur", function handler(e){
                     $.ajax({
                         type: "POST",
@@ -132,25 +134,32 @@
             }
             function submitQuestions(){
                 if($("#emailInput").val()===null || $("#emailInput").val()===""){
-                    $("#messageModal").modal("#show")
+                    $("#messageModal").modal("show")
+                    var elmt = document.getElementById("emailInput");
+                    elmt.scrollIntoView();
+                    $("#emailInput").addClass("is-invalid");
                     return;
                 }
                 else{
                     $("#loadingModal").modal("show");
-                    $.ajax({
+                    setTimeout(function(){
+                    console.info("Entre al listener del modal");
+                        $.ajax({
                     type: "POST",
                             url: '${pageContext.request.contextPath}/setEmail',
-                            data: $("email").serialize(),
+                            data: $("#email").serialize(),
                             success: function (data){
                                 
                             }
                     })
-                }
-                for(var i=1;i<=100;i++){
-                    if($("#answer-question"+i).val()==="0"){
-                        $("#loadingModal").modal("close");
-                        $("#messageModal").modal("show");
-                    }
+                        for(var i=1;i<=100;i++){
+                        if($("#answer-question"+i).val()==="0"){
+                            document.getElementById("answer-question"+i).scrollIntoView();
+                            $("#answer-question"+i).addClass("is-invalid");
+                            $("#loadingModal").modal('hide');
+                            $("#messageModal").modal("show");
+                            return;
+                        }
                     else{
                         $.ajax({
                         type: "POST",
@@ -210,7 +219,9 @@
                             $("#altruism").text(indicators.altruism);
                             
                         }
-                    })
+                    })},500);
+                }
+                                   
             }
             </script>
         <div class="container" style="margin-top:30px;">
@@ -221,7 +232,7 @@
             
             <div class="row" style="margin-top:20px; margin-bottom:20px">
                 <div class="col-4">Email:</div>                
-                <div class="col-4">
+                <div class="col-4 form-group" id="email-group">
                     <form method="POST" id='email' action="${pageContext.request.contextPath}/setEmail">
                     <input type="text" class="form-control" onchange="addOnblurEmail(this,'#email')" name="email" autocomplete="off" id="emailInput" title="Please provide a correct email." patter="(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])">
                     </form>
@@ -270,7 +281,7 @@ Please answer every statement, even if you are not completely sure of your respo
                                     <option value="2">2</option>
                                     <option value="3">3</option>
                                     <option value="4">4</option>
-                                    <option value="4">5</option>
+                                    <option value="5">5</option>
                            </select>
                         </div>
                         <input type="hidden" value="${index.index+1}" name="question">

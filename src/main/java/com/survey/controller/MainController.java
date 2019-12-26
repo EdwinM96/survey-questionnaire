@@ -57,10 +57,12 @@ public class MainController {
     
     @RequestMapping(value="/addAnswer", method=RequestMethod.POST)
     public void addAnswer(HttpServletRequest request, HttpServletResponse response, @RequestParam(name="option") Integer option, @RequestParam(name="question") Integer questionId){
+        Logger l = Logger.getLogger("name");
+        l.info("Question: "+questionId+" Option: " + option);
         if(request.getSession().getAttribute("surveyTaker")==null){
+            l.info("Returned empty");
             return;
         }
-        Logger l = Logger.getLogger("main");
         List<Question> question = qs.findAll();
         SurveyTaker surveyTaker = (SurveyTaker) request.getSession().getAttribute("surveyTaker");
         List<Answers> answers = as.findAll(surveyTaker);
@@ -69,8 +71,9 @@ public class MainController {
             for(Answers ans:answers ){
                 if(questionId.equals(ans.getQuestion().getNumber())){
                     l.info(questionId+"");
-                    answer.setAnswer(option);
-                    as.saveAnswers(answer);
+                    ans.setAnswer(option);
+                    Answers tempAnswer = as.saveAnswers(ans);
+                    l.info(tempAnswer.getQuestion().getNumber()+"");
                     return;
                 }
             }
