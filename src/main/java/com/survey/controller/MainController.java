@@ -47,12 +47,22 @@ public class MainController {
     @Autowired
     AnswersService as;
     
+    List<Answers> answers;
+    List<Question> questions;
+    
     @RequestMapping("/")
     public ModelAndView main(HttpServletRequest request, HttpServletResponse response){
         ModelAndView mv = new ModelAndView();
         mv.setViewName("main");
         mv.addObject("questions", qs.findAll());
+        questions = qs.findAll();
         return mv;        
+    }
+    
+    @RequestMapping("/initAnswers")
+    public void initAnswers(HttpServletRequest request, HttpServletResponse response){
+        SurveyTaker surveyTaker = (SurveyTaker) request.getSession().getAttribute("surveyTaker");
+        answers = as.findAll(surveyTaker);
     }
     
     @RequestMapping(value="/addAnswer", method=RequestMethod.POST)
@@ -63,23 +73,29 @@ public class MainController {
             l.info("Returned empty");
             return;
         }
-        List<Question> question = qs.findAll();
-        SurveyTaker surveyTaker = (SurveyTaker) request.getSession().getAttribute("surveyTaker");
-        List<Answers> answers = as.findAll(surveyTaker);
+         SurveyTaker surveyTaker = (SurveyTaker) request.getSession().getAttribute("surveyTaker");
         Answers answer = new Answers();
+        Question question = new Question();
         if(!answers.isEmpty()){
             for(Answers ans:answers ){
                 if(questionId.equals(ans.getQuestion().getNumber())){
                     l.info(questionId+"");
                     ans.setAnswer(option);
                     Answers tempAnswer = as.saveAnswers(ans);
-                    l.info(tempAnswer.getQuestion().getNumber()+"");
+                    l.info("Dentro del for: " + tempAnswer.getQuestion().getNumber()+" Mi question id es:questionId");
                     return;
                 }
             }
         }
+        l.info("No encontré un answer anterior");
+        for(Question quest:questions){
+            if(quest.getNumber().equals(questionId)){
+                question = quest;
+                break;
+            }
+        }
         answer.setAnswer(option);
-        answer.setQuestion(qs.findByQuestionNumber(questionId));
+        answer.setQuestion(question);
         answer.setSurveyTaker(surveyTaker);
         as.saveAnswers(answer);
     }
@@ -835,7 +851,7 @@ public class MainController {
         
         double altruis = altruisSum/4;
         
-        values.put("altruis", MathUtil.redondearDecimales(altruis, 2)+"");
+        values.put("altruism", MathUtil.redondearDecimales(altruis, 2)+"");
         
         values.put("aestheticAppreciation",MathUtil.redondearDecimales(finalAestheticAppreciation, 2)+"");
         values.put("inquisitiveness",MathUtil.redondearDecimales(finalInquisitiveness, 2)+"");
@@ -855,7 +871,7 @@ public class MainController {
         values.put("patience",MathUtil.redondearDecimales(finalPatience, 2)+"");
         values.put("agreeableness", MathUtil.redondearDecimales(agreeableness, 2)+"");
         
-        values.put("socialSelfSteem",MathUtil.redondearDecimales(finalSocialSelfSteem, 2)+"");
+        values.put("socialSelfEsteem",MathUtil.redondearDecimales(finalSocialSelfSteem, 2)+"");
         values.put("socialBoldness",MathUtil.redondearDecimales(finalSocialBoldness, 2)+"");
         values.put("sociability",MathUtil.redondearDecimales(finalSociability, 2)+"");
         values.put("liveliness",MathUtil.redondearDecimales(finalLiveliness, 2)+"");
