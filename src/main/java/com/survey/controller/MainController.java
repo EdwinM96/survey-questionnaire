@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javax.servlet.http.HttpServletRequest;
@@ -62,8 +63,19 @@ public class MainController {
         }
         Logger l = Logger.getLogger("main");
         List<Question> question = qs.findAll();
+        SurveyTaker surveyTaker = (SurveyTaker) request.getSession().getAttribute("surveyTaker");
+        List<Answers> answers = as.findAll(surveyTaker);
         Answers answer = new Answers();
-        SurveyTaker surveyTaker = (SurveyTaker) request.getSession().getAttribute("surveyTaker");    
+        if(!answers.isEmpty()){
+            for(Answers ans:answers ){
+                if(questionId.equals(ans.getQuestion().getNumber())){
+                    l.info(questionId+"");
+                    answer.setAnswer(option);
+                    as.saveAnswers(answer);
+                    return;
+                }
+            }
+        }
         answer.setAnswer(option);
         answer.setQuestion(qs.findByQuestionNumber(questionId));
         answer.setSurveyTaker(surveyTaker);

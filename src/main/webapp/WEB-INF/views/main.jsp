@@ -60,68 +60,46 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
         <script>
             var exportData;
-            function exportOportunidades() {
-            $.ajax({
-            type: "GET",
-                    headers: {
-                    'Accept': 'application/json'
-                    },
-                    url: '${pageContext.request.contextPath}/oportunidad/getAll',
-                    data: $('#search-form').serialize() + "&" + $('#export-form').serialize(),
-                    success: function (data)
-                    {
-                    let csvContent = "data:text/csv;charset=utf-8,";
-                    let i = 0;
-                    let firstRow = "Fecha de Creacion, Comprador, Vendedor, Titulo, Estatus, Monto Trans, Descripcion \r\n";
-                    csvContent += firstRow;
-                    for (var x in data) {
-                    let row = data[i]['creationDate'];
-                    if (data[i]['user']['display'] != null && data[i]['user']['display'] != "null"){
-                    row += data[i]['user']['display'];
-                    }
-
-                    if (data[i]['customValues']['vendedor'] != null && data[i]['customValues']['vendedor'] != "null" && data[i]['customValues']['vendedor'] != ""){
-                    row += "," + data[i]['customValues']['vendedor'];
-                    }
-                    else{
-                    row += ",";
-                    }
-                    if (data[i]['customValues']['titulo'] != null && data[i]['customValues']['titulo'] != "null" && data[i]['customValues']['titulo'] != ""){
-                    row += "," + data[i]['customValues']['titulo'];
-                    }
-                    else{
-                    row += ",";
-                    }
-                    if (data[i]['customValues']['estatus'] != null && data[i]['customValues']['estatus'] != "null" && data[i]['customValues']['estatus'] != ""){
-                    row += "," + data[i]['customValues']['estatus'];
-                    }
-                    else{
-                    row += ",";
-                    }
-                    if (data[i]['customValues']['montoTrans'] != null && data[i]['customValues']['montoTrans'] != "null" && data[i]['customValues']['montoTrans'] != ""){
-                    row += "," + data[i]['customValues']['montoTrans'];
-                    }
-                    else{
-                    row += ",";
-                    }
-                    if (data[i]['customValues']['descripcion'] != null && data[i]['customValues']['descripcion'] != "null" && data[i]['customValues']['descripcion'] != ""){
-                    row += "," + data[i]['customValues']['descripcion'];
-                    }
-                    else{
-                    row += ",";
-                    }
-                    csvContent += row + "\r\n";
-                    i++;
-                    }
-                    var encodedUri = encodeURI(csvContent);
+            function exportResults() {
+                var csvContent = "data:text/csv;charset=utf-8";
+                csvContent+="Honesty-Humility,"+exportData.honestyHumility+"\r\n";
+                csvContent+="Sincerity,"+exportData.sincerity+"\r\n";
+                csvContent+="Fariness,"+exportData.fairness+"\r\n";
+                csvContent+="Greed-Avoidance,"+exportData.greedAvoidance+"\r\n";
+                csvContent+="Modesty,"+exportData.modesty+"\r\n";
+                csvContent+="Emotionality,"+exportData.emotionality+"\r\n";
+                csvContent+="Fearfulness,"+exportData.fearfulness+"\r\n";
+                csvContent+="Anxiety,"+exportData.anxiety+"\r\n";
+                csvContent+="Dependence,"+exportData.dependence+"\r\n";
+                csvContent+="Sentimentality,"+exportData.sentimentality+"\r\n";
+                csvContent+="Extraversion,"+exportData.extraversion+"\r\n";
+                csvContent+="Social Self-Esteem,"+exportData.socialSelfEsteem+"\r\n";
+                csvContent+="Social Boldness,"+exportData.socialBoldness+"\r\n";
+                csvContent+="Sociability,"+exportData.sociability+"\r\n";
+                csvContent+="Liveliness,"+exportData.liveliness+"\r\n";
+                csvContent+="Agreeableness,"+exportData.agreeableness+"\r\n";
+                csvContent+="Forgiveness,"+exportData.forgiveness+"\r\n";
+                csvContent+="Gentleness,"+exportData.gentleness+"\r\n";
+                csvContent+="Flexiblity,"+exportData.flexibility+"\r\n";
+                csvContent+="Patience,"+exportData.patience+"\r\n";
+                csvContent+="Conscientousness,"+exportData.conscientousness+"\r\n";
+                csvContent+="Organization,"+exportData.organization+"\r\n";
+                csvContent+="Diligence,"+exportData.diligence+"\r\n";
+                csvContent+="Perfectionism,"+exportData.perfectionism+"\r\n";
+                csvContent+="Prudence,"+exportData.prudence+"\r\n";
+                csvContent+="Openness to Experience,"+exportData.openessToExperience+"\r\n";
+                csvContent+="Aesthhetic Appreciation,"+exportData.aestheticAppreciation+"\r\n";
+                csvContent+="Inquisitiveness,"+exportData.inquisitiveness+"\r\n";
+                csvContent+="Creativity,"+exportData.creativity+"\r\n";
+                csvContent+="Unconventionality,"+exportData.unconventionality+"\r\n";
+                csvContent+="Altruis,"+exportData.altruis+"\r\n";
+                
+                var encodedUri = encodeURI(csvContent);
                     var link = document.createElement("a");
                     link.setAttribute("href", encodedUri);
-                    link.setAttribute("download", "oportunidades.csv");
+                    link.setAttribute("download", "survey-results.csv");
                     document.body.appendChild(link);
-                    link.click();
-                    }
-
-            })
+                    link.click();       
             }
             
             function addOnblurEmail(input,name){
@@ -153,11 +131,37 @@
             
             }
             function submitQuestions(){
-                if($("#emailInput").val()==null || $("#emailInput").val()==""){
-                    $("#emailInput").scrollTop();
+                if($("#emailInput").val()===null || $("#emailInput").val()===""){
+                    $("#messageModal").modal("#show")
                     return;
                 }
-                $("#loadingModal").modal("show");
+                else{
+                    $("#loadingModal").modal("show");
+                    $.ajax({
+                    type: "POST",
+                            url: '${pageContext.request.contextPath}/setEmail',
+                            data: $("email").serialize(),
+                            success: function (data){
+                                
+                            }
+                    })
+                }
+                for(var i=1;i<=100;i++){
+                    if($("#answer-question"+i).val()==="0"){
+                        $("#loadingModal").modal("close");
+                        $("#messageModal").modal("show");
+                    }
+                    else{
+                        $.ajax({
+                        type: "POST",
+                        url: '${pageContext.request.contextPath}/addAnswer',
+                        data: $("#question"+i).serialize(),
+                        success: function(data){
+                        }
+                    })
+                    }
+                }
+                
                 $.ajax({
                         type: "GET",
                         url: '${pageContext.request.contextPath}/processAnswers',
@@ -278,6 +282,19 @@ Please answer every statement, even if you are not completely sure of your respo
             <div class="center-text text-center" style="margin-top:30px; margin-bottom:40px;">
                 <button class="btn btn-primary" onclick="submitQuestions()">Submit</button>
             </div>
+            
+            <div id="messageModal" class="modal fade" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Please fill out the survey completly to get your results.</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
             
             <!--------------Export Modal ------------------>
         <div id="exportModal" class="modal fade" role="dialog">
@@ -417,7 +434,7 @@ Please answer every statement, even if you are not completely sure of your respo
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary"  onclick="exportSurvey()">Export Survey</button>
+                        <button type="button" class="btn btn-primary"  onclick="exportResults()">Export Results</button>
                     </div>
                 </div>
             </div>
