@@ -101,48 +101,24 @@
                     document.body.appendChild(link);
                     link.click();       
             }
-            
-            function addOnblurEmail(input,name){
+            function removeError(input){
                 $(input).removeClass("is-invalid");
-            input.addEventListener("blur", function handler(e) {  
-                    $.ajax({
-                    type: "POST",
-                            url: '${pageContext.request.contextPath}/setEmail',
-                            data: $(name).serialize(),
-                            success: function (data){
-                                
-                            }
-                    })                
-
-                e.currentTarget.removeEventListener("blur", handler);
-                });              
             }
-            function addOnBlurQuestion(input, name){
-                console.info(input.value)
-                console.info($(name).serialize());
-                $(input).removeClass("is-invalid");
-                input.addEventListener("blur", function handler(e){
-                    $.ajax({
-                        type: "POST",
-                        url: '${pageContext.request.contextPath}/addAnswer',
-                        data: $(name).serialize(),
-                        success: function(data){
-                        }
-                    })
-                })
             
-            }
+            
             function submitQuestions(){
                     if($("#emailInput").val()===null || $("#emailInput").val()===""){
-                            $("#messageModal").modal("#show")
+                            $("#emailInput").addClass("is-invalid");
+                            $("#messageModal").modal("show");
+                            document.getElementById("emailInput").scrollIntoView();
                             return;
                         }
                     $("#loadingModal").modal("show");
                     setTimeout(function(){
                         for(var i=1;i<=100;i++){
-                            if($("#answer-question"+i).val()==="0"){
-                                document.getElementById("answer-question"+i).scrollIntoView();
-                                $("#answer-question"+i).addClass("is-invalid");
+                            if($("#answer"+i).val()==="0"){
+                                document.getElementById("answer"+i).scrollIntoView();
+                                $("#answer"+i).addClass("is-invalid");
                                 $("#loadingModal").modal('hide');
                                 $("#messageModal").modal("show");
                                 return;
@@ -237,7 +213,7 @@
                 <div class="col-4">Email:</div>                
                 <div class="col-4 form-group" id="email-group">
                     <form method="POST" id='email' action="${pageContext.request.contextPath}/setEmail">
-                    <input type="text" class="form-control" name="email" autocomplete="off" id="emailInput" patter="(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])">
+                        <input type="text" class="form-control" name="email" autocomplete="off" id="emailInput" onchange="removeError(this)" patter="(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])">
                     </form>
                 </div>               
             </div>
@@ -278,7 +254,7 @@ Please answer every statement, even if you are not completely sure of your respo
                     <div class="col-9"><strong>${index.index+1}.</strong> ${question.question}</div>
                     <div class="col-3">
                         <div class="form group">
-                            <select name="answer${index.index+1}" class="form-control" id="answer${index.index+1}">
+                            <select name="answer${index.index+1}" class="form-control" id="answer${index.index+1}" onchange="removeError(this)">
                                     <option value="0">0</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
