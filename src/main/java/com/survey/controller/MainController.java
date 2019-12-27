@@ -50,6 +50,8 @@ public class MainController {
     List<Answers> answers;
     List<Question> questions;
     
+    Logger l = Logger.getLogger("main");
+    
     @RequestMapping("/")
     public ModelAndView main(HttpServletRequest request, HttpServletResponse response){
         ModelAndView mv = new ModelAndView();
@@ -67,7 +69,6 @@ public class MainController {
     
     @RequestMapping(value="/addAnswer", method=RequestMethod.POST)
     public void addAnswer(HttpServletRequest request, HttpServletResponse response, @RequestParam(name="option") Integer option, @RequestParam(name="question") Integer questionId){
-        Logger l = Logger.getLogger("name");
         l.info("Question: "+questionId+" Option: " + option);
         if(request.getSession().getAttribute("surveyTaker")==null){
             l.info("Returned empty");
@@ -76,28 +77,42 @@ public class MainController {
          SurveyTaker surveyTaker = (SurveyTaker) request.getSession().getAttribute("surveyTaker");
         Answers answer = new Answers();
         Question question = new Question();
-        if(!answers.isEmpty()){
-            for(Answers ans:answers ){
-                if(questionId.equals(ans.getQuestion().getNumber())){
-                    l.info(questionId+"");
-                    ans.setAnswer(option);
-                    Answers tempAnswer = as.saveAnswers(ans);
-                    l.info("Dentro del for: " + tempAnswer.getQuestion().getNumber()+" Mi question id es:questionId");
-                    return;
+        l.info("Sesion Encontrada");
+        if(answers!= null){
+            if(!answers.isEmpty()){
+                Integer index = 1;
+                for(Answers ans:answers ){
+                    if(questionId.equals(ans.getQuestion().getNumber())){
+                        l.info(questionId+"");
+                        ans.setAnswer(option);
+                        Answers tempAnswer = as.saveAnswers(ans);
+                        answers.remove(ans);
+                        answers.add(tempAnswer);
+                        l.info("Dentro del for: " + tempAnswer.getQuestion().getNumber()+" Mi question id es: "+questionId);
+                        return;
+                    }
+                    l.info("Answer en list: "+ans.getQuestion().getNumber()+"");
                 }
             }
+            l.info("Estoy en el void, dentro de un if");
         }
-        l.info("No encontré un answer anterior");
-        for(Question quest:questions){
-            if(quest.getNumber().equals(questionId)){
-                question = quest;
-                break;
+        else{
+            l.info("No encontré un answer anterior");
+            for(Question quest:questions){
+                if(quest.getNumber().equals(questionId)){
+                    question = quest;
+                    break;
+                }
             }
+            answer.setAnswer(option);
+            answer.setQuestion(question);
+            answer.setSurveyTaker(surveyTaker);
+            Answers resultAnswer = as.saveAnswers(answer);
+            l.info("ResultAnswer: "+resultAnswer.getId());
+            answers.add(resultAnswer);
+            l.info("Answer creado");
+            return;
         }
-        answer.setAnswer(option);
-        answer.setQuestion(question);
-        answer.setSurveyTaker(surveyTaker);
-        as.saveAnswers(answer);
     }
     
     @RequestMapping(value="/setEmail", method=RequestMethod.POST)
@@ -107,6 +122,7 @@ public class MainController {
             SurveyTaker thisST = (SurveyTaker) session.getAttribute("surveyTaker");
             thisST.setEmail(email);
             sts.saveSurveyTaker(thisST);
+            l.info("Email Cambiado");
             return;
         }
         else{
@@ -115,9 +131,12 @@ public class MainController {
                 SurveyTaker st = surveyTakers.get(surveyTakers.size()-1);
                 st.setEmail(email);
                 session.setAttribute("surveyTaker", st);
+                l.info("Atributo seteado");
                 return;
             }
         }
+        
+        l.info("Atributo no seteado");
         SurveyTaker surveyTaker = new SurveyTaker();
         surveyTaker.setEmail(email);
         surveyTaker.setIp(request.getRemoteAddr());
@@ -128,19 +147,30 @@ public class MainController {
     @RequestMapping(value="/processAnswers", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody HashMap processAnswers(HttpServletRequest request, HttpServletResponse response, @RequestParam("email") String email){
         HashMap<String,String> values = new HashMap();
-        List<SurveyTaker> stList = sts.find(request.getRemoteAddr());
-        List<SurveyTaker> helperList = new ArrayList<>();
-        SurveyTaker st = stList.get(stList.size()-1);
-        for(int i=0; i<stList.size();i++){
-            if(stList.get(i).getEmail().equals(email)){
-                helperList.add(stList.get(i));
+        
+        SurveyTaker surveyTaker = new SurveyTaker();
+        surveyTaker.setEmail(email);
+        surveyTaker.setIp(request.getRemoteAddr());
+        SurveyTaker st = sts.saveSurveyTaker(surveyTaker); 
+        questions = qs.findAll();
+        
+        List<Answers> answerList = new ArrayList();
+        for(int i = 1;i <= 100;i++){
+            Question question = new Question();
+            Answers answer = new Answers();
+            for(Question quest:questions){
+                if(quest.getNumber().equals(i)){
+                    question = quest;
+                    break;
+                }
             }
-        }
-        if(!helperList.isEmpty()){
-            st = helperList.get(helperList.size()-1);
+            answer.setAnswer(Integer.parseInt(request.getParameter("answer"+i)));
+            answer.setQuestion(question);
+            answer.setSurveyTaker(surveyTaker);
+            Answers resultAnswer = as.saveAnswers(answer);
+            answerList.add(resultAnswer);
         }
         
-        List<Answers> answerList = as.findAll(st);
         List<Integer> sincerity = Arrays.asList(6,30,54,78);
         List<Integer> fairness = Arrays.asList(12,36,60,84);
         List<Integer> greedAvoidance = Arrays.asList(18,42,66,90);
@@ -548,7 +578,7 @@ public class MainController {
             }
             else if(flexibility.contains(questionNumber)){
                 if(questionNumber == 39){
-                    flexibilitySum += 39;
+                    flexibilitySum += answer.getAnswer();
                 }
                 else{
                     if(null!=answer.getAnswer())switch (answer.getAnswer()){

@@ -133,56 +133,28 @@
             
             }
             function submitQuestions(){
-                if($("#emailInput").val()===null || $("#emailInput").val()===""){
-                    $("#messageModal").modal("show")
-                    var elmt = document.getElementById("emailInput");
-                    elmt.scrollIntoView();
-                    $("#emailInput").addClass("is-invalid");
-                    return;
-                }
-                else{
-                    $("#loadingModal").modal("show");
-                    $.ajax({
-                    type: "GET",
-                            url: '${pageContext.request.contextPath}/initAnswers',
-                            data: "",
-                            success: function (data){
-                                
-                            }
-                    })
-                    setTimeout(function(){
-                        $.ajax({
-                    type: "POST",
-                            url: '${pageContext.request.contextPath}/setEmail',
-                            data: $("#email").serialize(),
-                            success: function (data){
-                                
-                            }
-                    })
-                    
-                        for(var i=1;i<=100;i++){
-                        if($("#answer-question"+i).val()==="0"){
-                            document.getElementById("answer-question"+i).scrollIntoView();
-                            $("#answer-question"+i).addClass("is-invalid");
-                            $("#loadingModal").modal('hide');
-                            $("#messageModal").modal("show");
+                    if($("#emailInput").val()===null || $("#emailInput").val()===""){
+                            $("#messageModal").modal("#show")
                             return;
                         }
-                    else{
-                        $.ajax({
-                        type: "POST",
-                        url: '${pageContext.request.contextPath}/addAnswer',
-                        data: $("#question"+i).serialize(),
-                        success: function(data){
+                    $("#loadingModal").modal("show");
+                    setTimeout(function(){
+                        for(var i=1;i<=100;i++){
+                            if($("#answer-question"+i).val()==="0"){
+                                document.getElementById("answer-question"+i).scrollIntoView();
+                                $("#answer-question"+i).addClass("is-invalid");
+                                $("#loadingModal").modal('hide');
+                                $("#messageModal").modal("show");
+                                return;
+                            }
                         }
-                    })
-                    }
-                }
+                        
+                        console.info($("#questions").serialize());
                 
                 $.ajax({
                         type: "GET",
                         url: '${pageContext.request.contextPath}/processAnswers',
-                        data: $("#email").serialize(),
+                        data: $("#email").serialize()+"&"+$("#questions").serialize(),
                         success: function(indicators){
                             exportData = indicators;
                             $("#loadingModal").modal("hide");
@@ -227,10 +199,33 @@
                             $("#altruism").text(indicators.altruism);
                             
                         }
-                    })},500);
+                    
+                    })
+                            
+                    
+                    },500);
                 }
-                                   
-            }
+                
+                
+                    
+                var currentPage = 1;
+                
+                function moveTo(index){
+                    console.info("Entre al moveTo");
+                    if(index === currentPage){
+                        return;
+                    }
+                    else{
+                        $("#column"+currentPage).css("display","none");
+                        $("#column"+index).css("display","");
+                        
+                        $("#nav"+currentPage).removeClass("active");
+                        $("#nav"+index).addClass("active");
+                        currentPage = index;
+                        return
+                    }
+                }
+            
             </script>
         <div class="container" style="margin-top:30px;">
             <div class="text-center"><h2 style="color:blue">Your title here</h2></div>
@@ -242,7 +237,7 @@
                 <div class="col-4">Email:</div>                
                 <div class="col-4 form-group" id="email-group">
                     <form method="POST" id='email' action="${pageContext.request.contextPath}/setEmail">
-                    <input type="text" class="form-control" onchange="addOnblurEmail(this,'#email')" name="email" autocomplete="off" id="emailInput" title="Please provide a correct email." patter="(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])">
+                    <input type="text" class="form-control" name="email" autocomplete="off" id="emailInput" patter="(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])">
                     </form>
                 </div>               
             </div>
@@ -277,13 +272,13 @@ Please answer every statement, even if you are not completely sure of your respo
                 
             </div>
             <div style="margin-top:40px;"></div>
-            <c:forEach items="${questions}" var="question" varStatus="index">
-                <form method="POST" id="question${index.index+1}" action="${pageContext.request.contextPath}/addAnswer">
+            <form method="POST" id="questions" action="${pageContext.request.contextPath}/addAnswer">
+            <c:forEach items="${questions}" var="question" varStatus="index">                
                 <div class="row" style="margin-top:20px;">
                     <div class="col-9"><strong>${index.index+1}.</strong> ${question.question}</div>
                     <div class="col-3">
                         <div class="form group">
-                            <select name="option" class="form-control" id="answer-question${index.index+1}" name="option" onchange="addOnBlurQuestion(this,'#question${index.index+1}')">
+                            <select name="answer${index.index+1}" class="form-control" id="answer${index.index+1}">
                                     <option value="0">0</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -292,12 +287,10 @@ Please answer every statement, even if you are not completely sure of your respo
                                     <option value="5">5</option>
                            </select>
                         </div>
-                        <input type="hidden" value="${index.index+1}" name="question">
                     </div>
                 </div>
-                </form>
             </c:forEach>
-            
+                </form>            
             <div class="center-text text-center" style="margin-top:30px; margin-bottom:40px;">
                 <button class="btn btn-primary" onclick="submitQuestions()">Submit</button>
             </div>
@@ -326,7 +319,7 @@ Please answer every statement, even if you are not completely sure of your respo
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div style="display:none">
+                        <div style="" id="column1">
                             <div class="row">
                                 <div class="col-6 text-center"><Strong>Honesty-Humility</strong></div>
                                 <div class="col-6 text-center" id="honesty-humility"></div>
@@ -348,7 +341,7 @@ Please answer every statement, even if you are not completely sure of your respo
                                 <div class="col-6 text-center" id="modesty"></div>
                             </div>
                         </div>
-                        <div style="display:none">
+                        <div style="display:none" id="column2">
                             <div class="row">
                                 <div class="col-6 text-center"><strong>Emotionality</strong></div>
                                 <div class="col-6 text-center" id="emotionality"></div>
@@ -370,90 +363,115 @@ Please answer every statement, even if you are not completely sure of your respo
                                 <div class="col-6 text-center" id="sentimentality"></div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-6 text-center"><strong>Extraversion</strong></div>
-                            <div class="col-6 text-center" id="extraversion"></div>
+                        <div id="column3" style="display:none">
+                            <div class="row">
+                                <div class="col-6 text-center"><strong>Extraversion</strong></div>
+                                <div class="col-6 text-center" id="extraversion"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 text-center">Social Self-Esteem</div>
+                                <div class="col-6 text-center" id="socialSelfEsteem"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 text-center">Social Boldness</div>
+                                <div class="col-6 text-center" id="socialBoldness"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 text-center">Sociability</div>
+                                <div class="col-6 text-center" id="sociability"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 text-center">Liveliness</div>
+                                <div class="col-6 text-center" id="liveliness"></div>
+                            </div>
                         </div>
-                        <div class="row">
-                            <div class="col-6 text-center">Social Self-Esteem</div>
-                            <div class="col-6 text-center" id="socialSelfEsteem"></div>
+                        <div id="column4" style="display:none">
+                            <div class="row">
+                                <div class="col-6 text-center"><strong>Agreeableness</strong></div>
+                                <div class="col-6 text-center" id="agreeableness"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 text-center">Forgiveness</div>
+                                <div class="col-6 text-center" id="forgiveness"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 text-center">Gentleness</div>
+                                <div class="col-6 text-center" id="gentleness"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 text-center">Flexibility</div>
+                                <div class="col-6 text-center" id="flexibility"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 text-center">Patience</div>
+                                <div class="col-6 text-center" id="patience"></div>
+                            </div>
                         </div>
-                        <div class="row">
-                            <div class="col-6 text-center">Social Boldness</div>
-                            <div class="col-6 text-center" id="socialBoldness"></div>
+                        <div id="column5" style="display:none">
+                            <div class="row">
+                                <div class="col-6 text-center"><strong>Conscientousness</strong></div>
+                                <div class="col-6 text-center" id="conscientousness"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 text-center">Organization</div>
+                                <div class="col-6 text-center" id="organization"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 text-center">Diligence</div>
+                                <div class="col-6 text-center" id="diligence"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 text-center">Perfectionism</div>
+                                <div class="col-6 text-center" id="perfectionism"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 text-center">Prudence</div>
+                                <div class="col-6 text-center" id="prudence"></div>
+                            </div>
                         </div>
-                        <div class="row">
-                            <div class="col-6 text-center">Sociability</div>
-                            <div class="col-6 text-center" id="sociability"></div>
+                        <div id="column6" style="display:none"> 
+                            <div class="row">
+                                <div class="col-6 text-center"><strong>Openness to Experience</strong></div>
+                                <div class="col-6 text-center" id="openessToExperience"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 text-center">Aesthetic Appreciation</div>
+                                <div class="col-6 text-center" id="aestheticAppreciation"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 text-center">Inquisitiveness</div>
+                                <div class="col-6 text-center" id="inquisitiveness"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 text-center">Creativity</div>
+                                <div class="col-6 text-center" id="creativity"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 text-center">Unconventionality</div>
+                                <div class="col-6 text-center" id="unconventionality"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 text-center">Altruism</div>
+                                <div class="col-6 text-center" id="altruism"></div>
+                            </div>
                         </div>
-                        <div class="row">
-                            <div class="col-6 text-center">Liveliness</div>
-                            <div class="col-6 text-center" id="liveliness"></div>
+                        <!-- Navigation -->
+                        <div class="row"></div>
+                        <div class="text-center" style="margin-top:20px">
+                        <nav aria-label="...">
+                            <ul class="pagination justify-content-center">
+                              <li class="page-item active" id="nav1"><a class="page-link" href="#" onclick="moveTo(1)">1</a></li>
+                              <li class="page-item" id="nav2">
+                                  <a class="page-link" href="#" onclick="moveTo(2)">2</a>
+                              </li>
+                              <li class="page-item" id="nav3"><a class="page-link" href="#" onclick="moveTo(3)">3</a></li>
+                              <li class="page-item" id="nav4"><a class="page-link" href="#" onclick="moveTo(4)">4</a></li>
+                              <li class="page-item" id="nav5"><a class="page-link" href="#" onclick="moveTo(5)">5</a></li>
+                              <li class="page-item" id="nav6"><a class="page-link" href="#" onclick="moveTo(6)">6</a></li>
+                            </ul>
+                        </nav>
                         </div>
-                        <div class="row">
-                            <div class="col-6 text-center"><strong>Agreeableness</strong></div>
-                            <div class="col-6 text-center" id="agreeableness"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 text-center">Forgiveness</div>
-                            <div class="col-6 text-center" id="forgiveness"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 text-center">Gentleness</div>
-                            <div class="col-6 text-center" id="gentleness"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 text-center">Flexibility</div>
-                            <div class="col-6 text-center" id="flexibility"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 text-center">Patience</div>
-                            <div class="col-6 text-center" id="patience"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 text-center"><strong>Conscientousness</strong></div>
-                            <div class="col-6 text-center" id="conscientousness"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 text-center">Organization</div>
-                            <div class="col-6 text-center" id="organization"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 text-center">Diligence</div>
-                            <div class="col-6 text-center" id="diligence"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 text-center">Perfectionism</div>
-                            <div class="col-6 text-center" id="perfectionism"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 text-center">Prudence</div>
-                            <div class="col-6 text-center" id="prudence"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 text-center"><strong>Openness to Experience</strong></div>
-                            <div class="col-6 text-center" id="openessToExperience"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 text-center">Aesthetic Appreciation</div>
-                            <div class="col-6 text-center" id="aestheticAppreciation"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 text-center">Inquisitiveness</div>
-                            <div class="col-6 text-center" id="inquisitiveness"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 text-center">Creativity</div>
-                            <div class="col-6 text-center" id="creativity"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 text-center">Unconventionality</div>
-                            <div class="col-6 text-center" id="unconventionality"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 text-center">Altruism</div>
-                            <div class="col-6 text-center" id="altruism"></div>
-                        </div>
+                        <!------------------------------------------->
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
