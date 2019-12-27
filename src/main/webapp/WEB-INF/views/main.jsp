@@ -460,14 +460,14 @@ Please answer every statement, even if you are not completely sure of your respo
                         <div class="text-center" style="margin-top:20px">
                         <nav aria-label="...">
                             <ul class="pagination justify-content-center">
-                              <li class="page-item active" id="nav1"><a class="page-link" href="#" onclick="moveTo(1)">1</a></li>
+                              <li class="page-item active" id="nav1"><a class="page-link" onclick="moveTo(1)">1</a></li>
                               <li class="page-item" id="nav2">
-                                  <a class="page-link" href="#" onclick="moveTo(2)">2</a>
+                                  <a class="page-link" onclick="moveTo(2)">2</a>
                               </li>
-                              <li class="page-item" id="nav3"><a class="page-link" href="#" onclick="moveTo(3)">3</a></li>
-                              <li class="page-item" id="nav4"><a class="page-link" href="#" onclick="moveTo(4)">4</a></li>
-                              <li class="page-item" id="nav5"><a class="page-link" href="#" onclick="moveTo(5)">5</a></li>
-                              <li class="page-item" id="nav6"><a class="page-link" href="#" onclick="moveTo(6)">6</a></li>
+                              <li class="page-item" id="nav3"><a class="page-link" onclick="moveTo(3)">3</a></li>
+                              <li class="page-item" id="nav4"><a class="page-link" onclick="moveTo(4)">4</a></li>
+                              <li class="page-item" id="nav5"><a class="page-link" onclick="moveTo(5)">5</a></li>
+                              <li class="page-item" id="nav6"><a class="page-link" onclick="moveTo(6)">6</a></li>
                             </ul>
                         </nav>
                         </div>
