@@ -299,7 +299,7 @@ Please answer every statement, even if you are not completely sure of your respo
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Please fill out the survey completly to get your results.</h5>
+                        <div class="text-center"><h5 class="modal-title" id="exampleModalLabel">Please fill out the survey completly to get your results.</h5></div>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -309,7 +309,7 @@ Please answer every statement, even if you are not completely sure of your respo
         </div>
             
             <!--------------Export Modal ------------------>
-        <div id="exportModal" class="modal fade" role="dialog">
+        <div id="exportModal" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
