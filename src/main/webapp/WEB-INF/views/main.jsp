@@ -116,7 +116,7 @@
                     $("#loadingModal").modal("show");
                     setTimeout(function(){
                         for(var i=1;i<=100;i++){
-                            if($("#answer"+i).val()==="0"){
+                            if(!$("input[name='answer"+i+"']:checked").val()){
                                 document.getElementById("answer"+i).scrollIntoView();
                                 $("#answer"+i).addClass("is-invalid");
                                 $("#loadingModal").modal('hide');
@@ -125,7 +125,6 @@
                             }
                         }
                         
-                        console.info($("#questions").serialize());
                 
                 $.ajax({
                         type: "GET",
@@ -187,7 +186,6 @@
                 var currentPage = 1;
                 
                 function moveTo(index){
-                    console.info("Entre al moveTo");
                     if(index === currentPage){
                         return;
                     }
@@ -204,7 +202,7 @@
             
             </script>
         <div class="container" style="margin-top:30px;">
-            <div class="text-center"><h2 style="color:blue">Your title here</h2></div>
+            <div class="text-center"><h2 style="color:blue">Personality Assestment</h2></div>
             <div class="row" style="margin-top:10px">
                 <div class="col-8">Please provide your email address</div>
             </div>
@@ -250,18 +248,36 @@ Please answer every statement, even if you are not completely sure of your respo
             <div style="margin-top:40px;"></div>
             <form method="POST" id="questions" action="${pageContext.request.contextPath}/addAnswer">
             <c:forEach items="${questions}" var="question" varStatus="index">                
-                <div class="row" style="margin-top:20px;">
-                    <div class="col-9"><strong>${index.index+1}.</strong> ${question.question}</div>
-                    <div class="col-3">
-                        <div class="form group">
-                            <select name="answer${index.index+1}" class="form-control" id="answer${index.index+1}" onchange="removeError(this)">
-                                    <option value="0">0</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                           </select>
+                <div class="row" style="margin-top:20px;" id="answer${index.index+1}">
+                    <div class="col-7"><strong>${index.index+1}.</strong> ${question.question}</div>
+                    <div class="col-1">    
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="answer${index.index+1}" id="radio${index.index+1}-1" value="1">
+                            <label class="form-check-label" for="radio${index.index+1}-1">1</label>
+                        </div>
+                    </div>
+                    <div class="col-1">
+                        <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="answer${index.index+1}" id="radio${index.index+1}-2" value="2">
+                        <label class="form-check-label" for="radio${index.index+1}-2">2</label>
+                        </div>
+                    </div>
+                    <div class="col-1">         
+                        <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="answer${index.index+1}" id="radio${index.index+1}-3" value="3">
+                        <label class="form-check-label" for="radio${index.index+1}-3">3</label>
+                        </div>
+                    </div>
+                    <div class="col-1">
+                        <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="answer${index.index+1}" id="radio${index.index+1}-4" value="4">
+                        <label class="form-check-label" for="radio${index.index+1}-4">4</label>
+                        </div>
+                    </div>
+                    <div class="col-1">   
+                        <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="answer${index.index+1}" id="radio${index.index+1}-5" value="5">
+                        <label class="form-check-label" for="radio${index.index+1}-5">5</label>
                         </div>
                     </div>
                 </div>
